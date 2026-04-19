@@ -22,15 +22,18 @@
             min-height: 100vh;
             margin: 0;
             color: #4a5568;
-            overflow: hidden; /* Evita barras de desplazamiento por la lluvia */
-            touch-action: none; /* Previene el zoom accidental en móviles al presionar */
+            overflow: hidden; 
+            /* Evita el comportamiento predeterminado del navegador al tocar */
+            touch-action: none; 
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .container {
             width: 90%;
             max-width: 500px;
             text-align: center;
-            z-index: 10; /* Asegura que el contenido esté por encima de la lluvia */
+            z-index: 10; 
         }
 
         h1 { 
@@ -69,7 +72,6 @@
             background: var(--accent);
             border-radius: 50%;
             filter: blur(8px);
-            /* Ahora la transición la controla el CSS directamente desde JavaScript */
             transition: transform 3s ease-in-out, opacity 3s ease-in-out;
             transform: scale(1);
             opacity: 0.3;
@@ -92,9 +94,10 @@
                        -5px -5px 10px var(--light);
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 1.5rem; /* Emojis un poco más grandes */
-            user-select: none; /* Evita que se seleccione el texto al mantener presionado */
-            -webkit-user-select: none;
+            font-size: 1.5rem; 
+            /* Esto elimina el recuadro gris feo de tu captura */
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .fidget-btn.active {
@@ -103,7 +106,6 @@
             transform: scale(0.95);
         }
 
-        /* Controles de volumen */
         .volume-container {
             display: flex;
             align-items: center;
@@ -141,7 +143,6 @@
             box-shadow: 2px 2px 5px var(--shadow);
         }
 
-        /* Animación de la lluvia */
         .rain-drop {
             position: fixed;
             top: -50px;
@@ -188,21 +189,18 @@
 </div>
 
 <script>
-    // --- ELEMENTOS DEL DOM ---
     const textElement = document.getElementById('instruction');
     const statusText = document.getElementById('status-text');
     const circleElement = document.getElementById('inner-circle');
     const buttons = document.querySelectorAll('.fidget-btn');
     const volumeSlider = document.getElementById('volume-slider');
 
-    // --- ESTADO GLOBAL ---
     let isHolding = false;
     let breathingInterval = null;
     let rainInterval = null;
+    let audioCtx = null; // No lo inicializamos aquí para evitar bloqueos
     
-    // --- LÓGICA DE RESPIRACIÓN ---
     const cycleTexts = ["Inhala...", "Mantén...", "Exhala...", "Mantén..."];
-    // Escala del círculo para cada fase (expansión, se mantiene grande, contracción, se mantiene pequeño)
     const cycleScales = [2.5, 2.5, 1, 1]; 
     let cycleIndex = 0;
 
@@ -215,9 +213,8 @@
     function startBreathing() {
         cycleIndex = 0;
         statusText.innerText = "Sigue el ritmo del color azul.";
-        updateBreathingUI(); // Inicia la fase 1 inmediatamente
+        updateBreathingUI(); 
         
-        // Cambia de fase cada 3 segundos
         breathingInterval = setInterval(() => {
             cycleIndex = (cycleIndex + 1) % cycleTexts.length;
             updateBreathingUI();
@@ -232,46 +229,7 @@
         circleElement.style.opacity = "0.3";
     }
 
-    // --- LÓGICA DE LLUVIA DE EMOJIS ---
     function createRainDrop(emoji) {
         const drop = document.createElement('div');
         drop.innerText = emoji;
-        drop.classList.add('rain-drop');
-        
-        // Posición horizontal aleatoria (0% a 100% del ancho de la pantalla)
-        drop.style.left = Math.random() * 100 + 'vw';
-        
-        // Tamaño aleatorio para dar efecto de profundidad
-        const size = Math.random() * 20 + 15; // Entre 15px y 35px
-        drop.style.fontSize = size + 'px';
-        
-        // Velocidad de caída aleatoria (entre 3s y 6s)
-        const duration = Math.random() * 3 + 3;
-        drop.style.animationDuration = duration + 's';
-        
-        document.body.appendChild(drop);
-
-        // Eliminar el elemento del DOM cuando termine la animación
-        setTimeout(() => {
-            drop.remove();
-        }, duration * 1000);
-    }
-
-    function startRain(emoji) {
-        createRainDrop(emoji); // Crea el primero inmediatamente
-        // Genera un nuevo emoji cada 300 milisegundos
-        rainInterval = setInterval(() => createRainDrop(emoji), 300);
-    }
-
-    function stopRain() {
-        clearInterval(rainInterval);
-    }
-
-    // --- LÓGICA DE SONIDOS ÚNICOS ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Perfiles únicos para cada emoji
-    const soundProfiles = {
-        '🫧': { type: 'sine', f1: 600, f2: 800, dur: 0.1 },      // Burbuja aguda y rápida
-        '🍃': { type: 'triangle', f1: 300, f2: 150, dur: 0.3 },  // Barrido suave hacia graves
-        '✨': { type: 'sine', f
+        drop.classList.
