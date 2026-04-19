@@ -3,17 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espacio de Calma</title>
+    <title>Tu Espacio de Calma | Nicole</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <h1 id="instruction">Preparando...</h1>
-        <div class="breathing-circle" id="circle"></div>
+<body class="theme-sunset">
+    <div class="main-container">
+        <header>
+            <h1>Un Momento para Respirar</h1>
+            <button id="customize-toggle">Personalizar</button>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="profile-card">
+                <div class="photo-container">
+                    <img src="https://via.placeholder.com/200/fca5a5/3730a3?text=Tu+Amiga" alt="Tu Espacio de Calma" id="profile-photo">
+                </div>
+                <h2>Hola, Nicole. Estás a salvo aquí.</h2>
+                <p class="tagline">Este es un lugar solo para ti, para cuando el mundo se sienta pesado.</p>
+            </section>
+
+            <section class="breathing-container">
+                <h2 id="breathing-instruction">Inhala...</h2>
+                <div class="breathe-circle" id="breathe-circle"></div>
+            </section>
+
+            <section class="affirmations">
+                <blockquote>
+                    "Respirar es el primer paso."
+                </blockquote>
+            </section>
+        </div>
+
+        <aside class="customize-panel" id="customize-panel">
+            <h3>Personaliza tu Espacio</h3>
+            
+            <div class="control-group themes">
+                <label>Tema de Color</label>
+                <div class="theme-buttons">
+                    <button class="theme-btn sunset active" data-theme="sunset"></button>
+                    <button class="theme-btn forest" data-theme="forest"></button>
+                    <button class="theme-btn deep-sea" data-theme="deep-sea"></button>
+                    <button class="theme-btn twilight" data-theme="twilight"></button>
+                </div>
+            </div>
+
+            <div class="control-group music">
+                <label>Música de Fondo (Ejemplo)</label>
+                <div class="music-controls">
+                    <button id="music-prev" class="icon-btn">«</button>
+                    <button id="music-play" class="icon-btn">►</button>
+                    <button id="music-next" class="icon-btn">»</button>
+                </div>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+                <p id="music-title">Naturaleza Suave</p>
+            </div>
+
+            <div class="control-group breathing-type">
+                <label>Técnica de Respiración</label>
+                <select id="breathing-selector">
+                    <option value="simple">Original (4/4)</option>
+                    <option value="box">Caja (4/4/4/4)</option>
+                </select>
+            </div>
+
+            <button id="close-panel">Cerrar</button>
+        </aside>
     </div>
+    
+    <audio id="audio-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
     <script src="app.js"></script>
 </body>
 </html>
