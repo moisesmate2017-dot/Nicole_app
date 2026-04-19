@@ -1,0 +1,57 @@
+:root {
+    --bg-color: #f0fdfa; /* Verde agua muy suave */
+    --text-color: #0f766e; /* Verde oscuro relajante */
+    --circle-base: #99f6e4; /* Círculo en reposo */
+    --circle-active: #2dd4bf; /* Círculo expandido */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+}
+
+h1 {
+    font-weight: 300;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-align: center;
+    height: 40px; /* Evita que la página salte al cambiar el texto */
+    transition: opacity 0.5s ease;
+}
+
+.breathing-circle {
+    width: 150px;
+    height: 150px;
+    background-color: var(--circle-base);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.3);
+    /* La transición dura 4 segundos para un ritmo de respiración calmado */
+    transition: transform 4s ease-in-out, background-color 4s ease-in-out, box-shadow 4s ease-in-out;
+}
+
+/* Clase que se añadirá con JavaScript */
+.breathing-circle.expand {
+    transform: scale(1.8);
+    background-color: var(--circle-active);
+    box-shadow: 0 0 60px rgba(45, 212, 191, 0.6);
+}
