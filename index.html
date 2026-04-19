@@ -232,4 +232,109 @@
     function createRainDrop(emoji) {
         const drop = document.createElement('div');
         drop.innerText = emoji;
-        drop.classList.
+        drop.classList.add('rain-drop');
+        drop.style.left = Math.random() * 100 + 'vw';
+        
+        const size = Math.random() * 20 + 15; 
+        drop.style.fontSize = size + 'px';
+        
+        const duration = Math.random() * 3 + 3;
+        drop.style.animationDuration = duration + 's';
+        
+        document.body.appendChild(drop);
+
+        setTimeout(() => {
+            if (drop.parentNode) drop.parentNode.removeChild(drop);
+        }, duration * 1000);
+    }
+
+    function startRain(emoji) {
+        createRainDrop(emoji); 
+        rainInterval = setInterval(() => createRainDrop(emoji), 300);
+    }
+
+    function stopRain() {
+        clearInterval(rainInterval);
+    }
+
+    const soundProfiles = {
+        '🫧': { type: 'sine', f1: 600, f2: 800, dur: 0.1 },
+        '🍃': { type: 'triangle', f1: 300, f2: 150, dur: 0.3 },
+        '✨': { type: 'sine', f1: 1200, f2: 1200, dur: 0.5 },
+        '💧': { type: 'sine', f1: 800, f2: 200, dur: 0.15 },
+        '☁️': { type: 'square', f1: 120, f2: 100, dur: 0.4 },
+        '🌙': { type: 'sine', f1: 400, f2: 400, dur: 0.8 }
+    };
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playSound(emoji) {
+        initAudio(); // Asegura que el audio esté activado al momento de presionar
+        
+        const profile = soundProfiles[emoji] || soundProfiles['🫧'];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        const maxVolume = parseFloat(volumeSlider.value) / 100 * 0.15; 
+
+        osc.type = profile.type;
+        osc.frequency.setValueAtTime(profile.f1, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(profile.f2, audioCtx.currentTime + profile.dur);
+
+        gain.gain.setValueAtTime(maxVolume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + profile.dur);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + profile.dur);
+    }
+
+    // --- MANEJO DE EVENTOS UNIFICADO (POINTER EVENTS) ---
+    buttons.forEach(btn => {
+        const emoji = btn.innerText.trim();
+
+        const handlePress = (e) => {
+            // Evita el comportamiento por defecto (como el menú contextual en móviles)
+            e.preventDefault(); 
+            if (isHolding) return;
+            isHolding = true;
+            btn.classList.add('active');
+            
+            playSound(emoji);
+            startBreathing();
+            startRain(emoji);
+        };
+
+        const handleRelease = (e) => {
+            e.preventDefault();
+            if (!isHolding) return;
+            isHolding = false;
+            btn.classList.remove('active');
+            
+            stopBreathing();
+            stopRain();
+        };
+
+        // PointerEvents unifican ratón, táctil y lápiz en una sola API moderna
+        btn.addEventListener('pointerdown', handlePress);
+        btn.addEventListener('pointerup', handleRelease);
+        btn.addEventListener('pointerleave', handleRelease); // Si arrastra el dedo/ratón fuera del botón
+        btn.addEventListener('pointercancel', handleRelease);
+        
+        // Bloqueo adicional del menú contextual en el celular al mantener presionado
+        btn.addEventListener('contextmenu', e => e.preventDefault());
+    });
+
+</script>
+
+</body>
+</html>
