@@ -23,7 +23,6 @@
             margin: 0;
             color: #4a5568;
             overflow: hidden; 
-            /* Evita el comportamiento predeterminado del navegador al tocar */
             touch-action: none; 
             -webkit-user-select: none;
             user-select: none;
@@ -95,7 +94,6 @@
             cursor: pointer;
             transition: all 0.2s ease;
             font-size: 1.5rem; 
-            /* Esto elimina el recuadro gris feo de tu captura */
             outline: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -145,7 +143,7 @@
 
         .rain-drop {
             position: fixed;
-            top: -50px;
+            top: -100px; /* Subido un poco para dar espacio a los emojis grandes */
             pointer-events: none;
             z-index: 1;
             animation: fall linear forwards;
@@ -153,8 +151,8 @@
 
         @keyframes fall {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
@@ -198,7 +196,7 @@
     let isHolding = false;
     let breathingInterval = null;
     let rainInterval = null;
-    let audioCtx = null; // No lo inicializamos aquí para evitar bloqueos
+    let audioCtx = null; 
     
     const cycleTexts = ["Inhala...", "Mantén...", "Exhala...", "Mantén..."];
     const cycleScales = [2.5, 2.5, 1, 1]; 
@@ -235,7 +233,9 @@
         drop.classList.add('rain-drop');
         drop.style.left = Math.random() * 100 + 'vw';
         
-        const size = Math.random() * 20 + 15; 
+        // --- AQUÍ ESTÁ EL CAMBIO PARA HACERLOS MÁS GRANDES ---
+        // Genera un tamaño aleatorio entre 40px y 90px
+        const size = Math.random() * 50 + 40; 
         drop.style.fontSize = size + 'px';
         
         const duration = Math.random() * 3 + 3;
@@ -276,7 +276,7 @@
     }
 
     function playSound(emoji) {
-        initAudio(); // Asegura que el audio esté activado al momento de presionar
+        initAudio(); 
         
         const profile = soundProfiles[emoji] || soundProfiles['🫧'];
         const osc = audioCtx.createOscillator();
@@ -298,12 +298,10 @@
         osc.stop(audioCtx.currentTime + profile.dur);
     }
 
-    // --- MANEJO DE EVENTOS UNIFICADO (POINTER EVENTS) ---
     buttons.forEach(btn => {
         const emoji = btn.innerText.trim();
 
         const handlePress = (e) => {
-            // Evita el comportamiento por defecto (como el menú contextual en móviles)
             e.preventDefault(); 
             if (isHolding) return;
             isHolding = true;
@@ -324,13 +322,10 @@
             stopRain();
         };
 
-        // PointerEvents unifican ratón, táctil y lápiz en una sola API moderna
         btn.addEventListener('pointerdown', handlePress);
         btn.addEventListener('pointerup', handleRelease);
-        btn.addEventListener('pointerleave', handleRelease); // Si arrastra el dedo/ratón fuera del botón
+        btn.addEventListener('pointerleave', handleRelease); 
         btn.addEventListener('pointercancel', handleRelease);
-        
-        // Bloqueo adicional del menú contextual en el celular al mantener presionado
         btn.addEventListener('contextmenu', e => e.preventDefault());
     });
 
